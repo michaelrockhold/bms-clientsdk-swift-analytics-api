@@ -11,13 +11,8 @@
 *     limitations under the License.
 */
 
+import Foundation
 
-
-// MARK: - Swift 3
-
-#if swift(>=3.0)
-    
-    
     
 /*
     Contains all of the metadata for one network request made via the `Request` or `BMSURLSession` APIs in BMSCore.
@@ -101,102 +96,3 @@ public struct RequestMetadata {
 }
 
 
-
-
-
-/**************************************************************************************************/
-
-
-
-
-
-// MARK: - Swift 2
-
-#else
-
-
-
-/*
-    Contains all of the metadata for one network request made via the `Request` or `BMSURLSession` APIs in BMSCore.
-    Once the response is received and all of the metadata has been gathered, the metadata can be logged with Analytics.
-     
-    Note: This is not part of the API documentation because it is only meant to be used by BMSCore.
-*/
-public struct RequestMetadata {
-
-    
-    // The URL of the resource that the request is being sent to.
-    public var url: NSURL?
-    
-    // The time at which the request is considered to have started.
-    public let startTime: Int64
-    
-    // Allows Analytics to track each network request and its associated metadata.
-    public let trackingId: String
-    
-    // The response received.
-    public var response: NSURLResponse? = nil
-
-    // The request method
-    public var requestMethod: String? = nil
-
-    // The time at which the request is considered complete.
-    public var endTime: Int64 = 0
-    
-    // Amount of data sent.
-    public var bytesSent: Int64 = 0
-    
-    // Amount of data received in the response.
-    public var bytesReceived: Int64 = 0
-    
-    // Combines all of the metadata into a single JSON object
-    public var combinedMetadata: [String: AnyObject] {
-        
-        var roundTripTime = 0
-        // If this is not true, that means some BMSCore developer forgot to set the endTime somewhere
-        if endTime > startTime {
-            roundTripTime = endTime - startTime
-        }
-        
-        // Data for analytics logging
-        // NSNumber is used because, for some reason, JSONSerialization fails to convert Int64 to JSON
-        var responseMetadata: [String: AnyObject] = [:]
-        responseMetadata["$category"] = "network"
-        responseMetadata["$trackingid"] = trackingId
-        responseMetadata["$outboundTimestamp"] = NSNumber(longLong: startTime)
-        responseMetadata["$inboundTimestamp"] = NSNumber(longLong: endTime)
-        responseMetadata["$roundTripTime"] = NSNumber(integer: roundTripTime)
-        responseMetadata["$bytesSent"] = NSNumber(longLong: bytesSent)
-        responseMetadata["$bytesReceived"] = NSNumber(longLong: bytesReceived)
-	responseMetadata["$requestMethod"] = requestMethod
-        
-        if let urlString = url?.absoluteString {
-            responseMetadata["$path"] = urlString
-        }
-        
-        if let httpResponse = response as? NSHTTPURLResponse {
-            responseMetadata["$responseCode"] = httpResponse.statusCode
-        }
-        
-        return responseMetadata
-    }
-    
-    
-    
-    public init(url: NSURL?, startTime: Int64, trackingId: String) {
-        self.url = url
-        self.startTime = startTime
-        self.trackingId = trackingId
-    }
-    
-    
-    // Use analytics to record the request metadata
-    public func recordMetadata() {
-        
-        Analytics.log(metadata: combinedMetadata)
-    }
-}
-    
-    
-    
-#endif
