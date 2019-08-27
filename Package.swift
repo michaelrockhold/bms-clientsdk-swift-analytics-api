@@ -13,16 +13,28 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "../bms-clientsdk-swift-core", .branch("depodulate")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "BMSAnalyticsAPI",
-            dependencies: []),
+            dependencies: [],
+            path: "Source",
+            sources: [
+            	"Analytics.swift",
+				"Logger.swift",
+				"RequestMetadata.swift"
+            ]
+            ),
         .testTarget(
             name: "BMSAnalyticsAPITests",
-            dependencies: ["BMSAnalyticsAPI"]),
+            dependencies: ["BMSAnalyticsAPI"],
+            path: "Tests",
+            source: [
+            	"LoggerTests.swift",
+            	"RequestMetadataTests.swift"
+            ]),
     ]
 )
