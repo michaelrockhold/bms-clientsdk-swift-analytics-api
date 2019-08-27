@@ -32,7 +32,7 @@ let package = Package(
             name: "BMSAnalyticsAPITests",
             dependencies: ["BMSAnalyticsAPI"],
             path: "Tests",
-            source: [
+            sources: [
             	"LoggerTests.swift",
             	"RequestMetadataTests.swift"
             ]),
