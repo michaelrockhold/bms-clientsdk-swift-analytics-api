@@ -13,7 +13,6 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-//        .package(url: "../bms-clientsdk-swift-core", .branch("depodulate"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
